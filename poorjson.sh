@@ -1,5 +1,8 @@
 #!/bin/sh
 # A POSIX compatible JSON parser within 60 lines of code (without comments)
+# Usage example:
+# $ echo '{ "key1" : { "key2": {}, "key3": [null, true, false, "value"]}}' | ./poorjson.sh '"key1"' '"key3"' 3
+# $ "value"
 # shellcheck disable=SC2015
 
 __JNUM='-\?\(0\|[1-9][0-9]*\)\(\.[0-9]\+\)\?\([eE][+-]?[0-9]\+\)\?'
