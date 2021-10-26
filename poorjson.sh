@@ -18,7 +18,7 @@ __jread() {
 
 __jarr() {
 	[ "$1" -gt 0 ] 2>/dev/null || set -- -1
-	[ "$1" -eq 0 ] && __jval "$@" || __jval || {
+	if [ "$1" -eq 0 ]; then __jval "$@"; else __jval; fi || {
 		[ "$__TOKEN" = ']' ] && return || _token_error
 	}
 	while :; do
@@ -27,7 +27,7 @@ __jarr() {
 			"]") return 0 ;;
 			*) _token_error ;;
 		esac
-		[ "$1" -eq 0 ] && __jval "$@" || __jval || _token_error
+		if [ "$1" -eq 0 ]; then __jval "$@"; else __jval; fi || _token_error
 	done
 }
 
@@ -38,7 +38,7 @@ __jobj() {
 			__TMP=$__TOKEN
 			__jread "$1"
 			[ "$__TOKEN" = ":" ] || _token_error
-			[ "$__TMP" = "$1" ] && __jval "$@" || __jval || _token_error
+			if [ "$__TMP" = "$1" ]; then __jval "$@"; else __jval; fi || _token_error
 			__jread "$1"
 			[ "$__TOKEN" = "}" ] && return 0
 			[ "$__TOKEN" != "," ] && _token_error
