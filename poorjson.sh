@@ -60,7 +60,7 @@ __jval() {
 }
 
 [ "$#" -gt 0 ] && set -- "" "$@" "*"
-if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" | sed -e "/\s*\|$__JTOK/!{Q255};/^$/d" | __jval "$@"; then
+if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{Q255};/^$/d" | __jval "$@"; then
 	echo "JSON string invalid."
 	exit 1
 fi
