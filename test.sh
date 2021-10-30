@@ -111,4 +111,4 @@ negative "Invalid case 6" '{"key": true, "key2": [, true]}' \
 'Unexpected token ","
 JSON string invalid.'
 
-return $FAILED_CASES
+exit $FAILED_CASES
