@@ -60,7 +60,7 @@ __jval() {
 	esac
 }
 
-if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{q255}" | sed -e "/^\s*$/d" | __jval "" "$@" .; then
+sed -u -e "s/\s*\($__JTOK\)\s*/\1\n/g" | sed -e "/^\s*$/d;/$__JTOK/!{q255};" | { __jval "" "$@" . && ! read -r; } || {
 	echo "JSON string invalid."
 	exit 1
-fi
+}
