@@ -84,6 +84,16 @@ positive "Array with one element" '{"key": ["element"]}' '"element"' '"key"' 0
 
 positive "Array with multiple elements" '{"key": ["ele1", "ele2", "ele3", "ele4"]}' '"ele3"' '"key"' 2
 
+positive "Complex JSON" \
+'{
+	"key": ["ele1", "ele2", "ele3", "ele4"],
+	"key2-empty": [],
+	"key3-bool": true,
+	"key4-bool": false,
+	"key5-null": null,
+	"key6": ["1", 2, 3.0, -4, 0.5e5, -0.6, -0.7e-5, true, false, null]
+}' 'null' '"key6"' 9
+
 negative "Empty String" '' \
 'Unexpected EOF after ""
 JSON string invalid.' -
