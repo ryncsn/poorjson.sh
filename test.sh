@@ -86,29 +86,29 @@ positive "Array with multiple elements" '{"key": ["ele1", "ele2", "ele3", "ele4"
 
 negative "Empty String" '' \
 'Unexpected EOF after ""
-JSON string invalid.'
+JSON string invalid.' -
 
 negative "Invalid case 1" ',' \
-'JSON string invalid.'
+'JSON string invalid.' -
 
 negative "Invalid case 2" '{,}' \
 'Unexpected token ","
-JSON string invalid.'
+JSON string invalid.' -
 
 negative "Invalid case 3" '{"key": }' \
 'Unexpected token "}"
-JSON string invalid.'
+JSON string invalid.' -
 
 negative "Invalid case 4" '{"key": ,"key2": []}' \
 'Unexpected token ","
-JSON string invalid.'
+JSON string invalid.' -
 
 negative "Invalid case 5" '{"key":: ,"key2": []}' \
 'Unexpected token ":"
-JSON string invalid.'
+JSON string invalid.' -
 
 negative "Invalid case 6" '{"key": true, "key2": [, true]}' \
 'Unexpected token ","
-JSON string invalid.'
+JSON string invalid.' -
 
 exit $FAILED_CASES

@@ -9,6 +9,7 @@ __JNUM='-\?\(0\|[1-9][0-9]*\)\(\.[0-9]\+\)\?\([eE][+-]?[0-9]\+\)\?'
 __JSTR='"\([^[:cntrl:]"]\|\\["\\\/bfnrt]\|u[0-9]{4}\)*"'
 __TOKEN="" __TMP="" __JTOK="$__JSTR\|$__JNUM\|true\|false\|null\|[][}{,:]"
 
+_is_match() { [ "$1" = "$2" ] || [ "$1" = \* ] || [ "$1" = . ]; }
 _eof_error() { echo "Unexpected EOF after \"$__TOKEN\""; exit 1; }
 _token_error() { echo "Unexpected token \"$__TOKEN\""; exit 1; }
 __jread() {
@@ -17,7 +18,7 @@ __jread() {
 }
 
 __jarr() {
-	if [ "$1" -eq 0 ] 2>/dev/null || [ "$1" = \* ] || [ "$1" = . ]; then __jval "$@"; else __jval; fi || {
+	if _is_match "$1" 0; then __jval "$@"; else __jval; fi || {
 		[ "$__TOKEN" = ']' ] && return || _token_error
 	}
 	while :; do
@@ -26,7 +27,7 @@ __jarr() {
 			"]") return 0 ;;
 			*) _token_error ;;
 		esac
-		if [ "$1" -eq 0 ] 2>/dev/null || [ "$1" = \* ] || [ "$1" = . ]; then __jval "$@"; else __jval; fi || _token_error
+		if _is_match "$1" 0; then __jval "$@"; else __jval; fi || _token_error
 	done
 }
 
@@ -37,7 +38,7 @@ __jobj() {
 			__TMP=$__TOKEN
 			__jread "$1"
 			[ "$__TOKEN" = ":" ] || _token_error
-			if [ "$__TMP" = "$1" ] || [ "$1" = \* ] || [ "$1" = . ]; then __jval "$@"; else __jval; fi || _token_error
+			if _is_match "$1" "$__TMP"; then __jval "$@"; else __jval; fi || _token_error
 			__jread "$1"
 			[ "$__TOKEN" = "}" ] && return 0
 			[ "$__TOKEN" != "," ] && _token_error
@@ -60,8 +61,7 @@ __jval() {
 	return 0
 }
 
-[ "$#" -gt 0 ] && set -- "" "$@" .
-if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{q255};/^$/d" | __jval "$@"; then
+if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{q255};/^$/d" | __jval "" "$@" .; then
 	echo "JSON string invalid."
 	exit 1
 fi
