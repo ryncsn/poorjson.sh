@@ -5,7 +5,7 @@
 # $ "value"
 # shellcheck disable=SC2015
 
-__JNUM='-\?\(0\|[1-9][0-9]*\)\(\.[0-9]\+\)\?\([eE][+-]?[0-9]\+\)\?'
+__JNUM='-\?\(0\|[1-9][0-9]*\)\(\.[0-9]\+\)\?\([eE][+-]\?[0-9]\+\)\?'
 __JSTR='"\([^[:cntrl:]"]\|\\["\\\/bfnrt]\|u[0-9]{4}\)*"'
 __TOKEN="" __TMP="" __JTOK="$__JSTR\|$__JNUM\|true\|false\|null\|[][}{,:]"
 
@@ -60,7 +60,7 @@ __jval() {
 	esac
 }
 
-if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{q255};/^$/d" | __jval "" "$@" .; then
+if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{q255}" | sed -e "/^\s*$/d" | __jval "" "$@" .; then
 	echo "JSON string invalid."
 	exit 1
 fi
