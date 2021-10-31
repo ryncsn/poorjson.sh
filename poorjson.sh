@@ -55,10 +55,9 @@ __jval() {
 	__jread "$1"; case $__TOKEN in
 		'{') __jobj "$@" ;;
 		"[") __jarr "$@" ;;
-		true | false | null | -* | [0-9]* | '"'*) [ "$1" = \* ] && echo "$__TOKEN" ;;
+		true | false | null | -* | [0-9]* | '"'*) [ "$1" = \* ] && echo "$__TOKEN"; : ;;
 		*) return 1 ;;
 	esac
-	return 0
 }
 
 if ! sed -e "s/\s*\($__JTOK\)\s*/\1\n/g" -e "/\s*\|$__JTOK/!{q255};/^$/d" | __jval "" "$@" .; then
