@@ -5,9 +5,9 @@
 # $ "value"
 # shellcheck disable=SC2015
 
-__JNUM='\(-\?\(0\|[1-9][0-9]*\)\(\.[0-9]\+\)\?\([eE][+-]\?[0-9]\+\)\?\)'
-__JSTR='\("\([^[:cntrl:]"]\|\\["\\\/bfnrt]\|u[0-9]{4}\)*"\)'
-_TOKEN="" _TMP="" __JTOK="$__JSTR\|$__JNUM\|true\|false\|null\|[][}{,:]"
+__JNUM='(-?([1-9][0-9]*|0)(.[0-9]+)?([eE][-+]?[0-9]+)?)'
+__JSTR='("([^[:cntrl:]"]|\\["\\\/bfnrt]|u[0-9]{4})*")'
+_TOKEN="" _TMP="" __JTOK="$__JSTR|$__JNUM|true|false|null|[][}{,:]"
 
 _is_match() { [ "$1" = "$2" ] || [ "$1" = \* ] || [ "$1" = . ]; }
 _eof_error() { echo "Unexpected EOF after \"$_TOKEN\""; exit 1; }
@@ -60,7 +60,7 @@ _jval() {
 	esac
 }
 
-sed -e "s/\($__JTOK\)/\n\1\n/g" | sed -e "/^\s*$/d;/$__JTOK/!{q255};" | { _jval "" "$@" . && ! read -r; } || {
+sed -E "s/($__JTOK)/\n\1\n/g" | sed -E "/^[[:space:]]*$/d;/$__JTOK/!q;" | { _jval "" "$@" . && ! read -r 2>/dev/null; } || {
 	echo "JSON string invalid."
 	exit 1
 }
