@@ -95,30 +95,24 @@ positive "Complex JSON" \
 }' 'null' '"key6"' 9
 
 negative "Empty String" '' \
-'Unexpected EOF after ""
-JSON string invalid.' -
+'Unexpected EOF after: ""' -
 
 negative "Invalid case 1" ',' \
-'JSON string invalid.' -
+'Unexpected invalid token: ","' -
 
 negative "Invalid case 2" '{,}' \
-'Unexpected token ","
-JSON string invalid.' -
+'Unexpected token: ","' -
 
 negative "Invalid case 3" '{"key": }' \
-'Unexpected token "}"
-JSON string invalid.' -
+'Unexpected token: "}"' -
 
 negative "Invalid case 4" '{"key": ,"key2": []}' \
-'Unexpected token ","
-JSON string invalid.' -
+'Unexpected token: ","' -
 
 negative "Invalid case 5" '{"key":: ,"key2": []}' \
-'Unexpected token ":"
-JSON string invalid.' -
+'Unexpected token: ":"' -
 
 negative "Invalid case 6" '{"key": true, "key2": [, true]}' \
-'Unexpected token ","
-JSON string invalid.' -
+'Unexpected token: ","' -
 
 exit $FAILED_CASES
