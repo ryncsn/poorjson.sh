@@ -50,8 +50,12 @@ valid
 
 echo '{"key":: "val"}' | ./poorjson.sh - && echo "valid" || echo "invalid"
 # Prints:
-Unexpected token ":"
-JSON string invalid.
+Unexpected token: ":"
+invalid
+
+echo '' | ./poorjson.sh - && echo "valid" || echo "invalid"
+# Prints:
+Unexpected EOF after: ""
 invalid
 ```
 
