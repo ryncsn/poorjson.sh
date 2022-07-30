@@ -13,34 +13,35 @@ _is_match() { case "$1" in "$2"|'*'|'.');; *) ! :;; esac }
 _err() { echo "Unexpected $1: \"$_TOKEN\""; exit 1; }
 _jread() {
 	read -r _TOKEN || _err "EOF after"
-	[ "$1" = . ] && echo "$_TOKEN"
+	[ "$1" != . ] || echo "$_TOKEN"
 }
 
 _jarr() {
 	if _is_match "$1" 0; then _jval "$@"; else _jval; fi || {
-		[ "$_TOKEN" = ']' ] && return || _err "token"
+		[ "$_TOKEN" = ']' ]; return
 	}
 	while :; do
-		_jread "$1";
-		case $_TOKEN in "]") return 0;;
+		_jread "$1"
+		case $_TOKEN in "]") return;;
 				",") [ "$1" -ge 0 ] 2>/dev/null && _TMP=$(($1 - 1)) && shift && set -- "$_TMP" "$@";;
-				*) _err "token";;
+				*) return 1;;
 		esac
-		if _is_match "$1" 0; then _jval "$@"; else _jval; fi || _err "token"
+		if _is_match "$1" 0; then _jval "$@"; else _jval; fi || return
 	done
 }
 
 _jobj() {
-	_jread "$1"; [ "$_TOKEN" = "}" ] && return
+	_jread "$1"
+	[ "$_TOKEN" = "}" ] && return
 	while :; do
-		case $_TOKEN in '"'*'"');; *)! :;; esac || _err "token"
+		case $_TOKEN in '"'*'"');; *)! :;; esac || return
 		_TMP=$_TOKEN
 		_jread "$1"
-		[ "$_TOKEN" = ":" ] || _err "token"
-		if _is_match "$1" "$_TMP"; then _jval "$@"; else _jval; fi || _err "token"
+		[ "$_TOKEN" = ":" ] || return
+		if _is_match "$1" "$_TMP"; then _jval "$@"; else _jval; fi || return
 		_jread "$1"
-		[ "$_TOKEN" = "}" ] && return 0
-		[ "$_TOKEN" != "," ] && _err "token"
+		[ "$_TOKEN" = "}" ] && return
+		[ "$_TOKEN" = "," ] || return
 		_jread "$1"
 	done
 }
@@ -48,10 +49,10 @@ _jobj() {
 _jval() {
 	[ "$#" -eq 0 ] || [ "$*" = . ] || shift
 	_jread "$1"
-	case $_TOKEN in '{') _jobj "$@";;
-			"[") _jarr "$@";;
+	case $_TOKEN in '{') _jobj "$@" || _err "token";;
+			"[") _jarr "$@" || _err "token";;
 			true|false|null|-*|[0-9]*|'"'*'"') [ "$1" = \* ] && echo "$_TOKEN"; :;;
-			*) return 1;;
+			*) ! :;;
 	esac
 }
 
