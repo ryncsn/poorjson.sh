@@ -7,7 +7,7 @@
 
 __JNUM='(-?([1-9][0-9]*|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?)'
 __JSTR='("([^[:cntrl:]\\"]|\\(["\\\/bfnrt]|u[0-9a-fA-F]{4}))*")'
-_TOKEN="" _TMP="" __JTOK="$__JSTR|$__JNUM|true|false|null|[][}{,:]"
+_TOKEN="" _PRV="" _IDX="" __JTOK="$__JSTR|$__JNUM|true|false|null|[][}{,:]"
 
 _is_match() { [ "$1" = "$2" ] || [ "$1" = \* ] || [ "$1" = . ]; }
 _err() { echo "Unexpected $1: \"$_TOKEN\""; exit 1; }
@@ -23,7 +23,7 @@ _jarr() {
 	while :; do
 		_jread "$1";
 		case $_TOKEN in "]") return 0;;
-				",") [ "$1" -ge 0 ] 2>/dev/null && _TMP=$(( $1 - 1)) && shift && set -- "$_TMP" "$@";;
+				",") [ "$1" -ge 0 ] 2>/dev/null && _IDX=$(($1 - 1)) && shift && set -- "$_IDX" "$@";;
 				*) _err "token";;
 		esac
 		if _is_match "$1" 0; then _jval "$@"; else _jval; fi || _err "token"
@@ -31,13 +31,13 @@ _jarr() {
 }
 
 _jobj() {
-	_jread "$1"; [ "$_TOKEN" = "}" ] && return 0
+	_jread "$1"; [ "$_TOKEN" = "}" ] && return
 	while :; do
-		_TMP=$_TOKEN
-		case $_TMP in '"'*'"')
+		_PRV=$_TOKEN
+		case $_PRV in '"'*'"')
 			_jread "$1"
 			[ "$_TOKEN" = ":" ] || _err "token"
-			if _is_match "$1" "$_TMP"; then _jval "$@"; else _jval; fi || _err "token"
+			if _is_match "$1" "$_PRV"; then _jval "$@"; else _jval; fi || _err "token"
 			_jread "$1"
 			[ "$_TOKEN" = "}" ] && return 0
 			[ "$_TOKEN" != "," ] && _err "token"
@@ -55,7 +55,7 @@ _jval() {
 	case $_TOKEN in '{') _jobj "$@";;
 			"[") _jarr "$@";;
 			true|false|null|-*|[0-9]*|'"'*'"') [ "$1" = \* ] && echo "$_TOKEN"; :;;
-		*) return 1;;
+			*) return 1;;
 	esac
 }
 
