@@ -58,7 +58,6 @@ echo '' | ./poorjson.sh - && echo "valid" || echo "invalid"
 Unexpected EOF after: ""
 invalid
 ```
-
 ## Known issues
 - If the same key appears multiple times in an object, poorjson.sh will simply parse them repeatedly.
 - Not tested enough.
