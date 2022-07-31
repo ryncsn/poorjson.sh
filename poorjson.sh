@@ -1,10 +1,9 @@
 #!/bin/sh
-# A POSIX compatible JSON parser within 60 lines of code (without comments)
+# A POSIX compatible JSON parser within 60 lines of code
 # Usage example:
 # $ echo '{ "key1" : { "key2": {}, "key3": [null, true, false, "value"]}}' | ./poorjson.sh '"key1"' '"key3"' 3
 # $ "value"
 # shellcheck disable=SC2015
-
 __JNUM='(-?([1-9][0-9]*|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?)'
 __JSTR='("([^[:cntrl:]\\"]|\\(["\\\/bfnrt]|u[0-9a-fA-F]{4}))*")'
 _TOK="" _TMP="" __JTOK="$__JSTR|$__JNUM|true|false|null|[][}{,:]"
