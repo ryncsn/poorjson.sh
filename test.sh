@@ -95,7 +95,7 @@ positive "Complex JSON" \
 }' 'null' '"key6"' 9
 
 negative "Empty String" '' \
-'Unexpected EOF after: ""' -
+'Unexpected EOF after token: ""' -
 
 negative "Invalid case 1" ',' \
 'Unexpected invalid token: ","' -
