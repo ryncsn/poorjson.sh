@@ -55,6 +55,6 @@ _jval() {
 	esac
 }
 
-sed -E "s/($__JTOK)/\n\1\n/g" | sed -E "/^[[:space:]]*$/d;/$__JTOK/!q;" | {
+sed -E "s/($__JTOK)/\1\n/g" | sed -E "/^[[:space:]]*$/d;/$__JTOK/!q;" | {
 	_jval "" "$@" . && ! read -r _TOK 2>/dev/null || _err "invalid token"
 }
