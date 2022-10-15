@@ -60,3 +60,8 @@ invalid
 ```
 ## Known issues
 - If the same key appears multiple times in an object, poorjson.sh will simply parse them repeatedly.
+- Due to the function call depths limit in Shell, JSON with thousands of levels of embedment can't be processed by poorjson.sh. But except that, it should be good enough for most common usage.
+
+## Test and comparison
+Test result with [JSONTestSuite](https://github.com/nst/JSONTestSuite.git):
+![poorjson-test-result](https://ryncsn.github.io/poorjson-test-result.png "poorjson.sh test result and comparison with other commonly used JSON parsing tools")
